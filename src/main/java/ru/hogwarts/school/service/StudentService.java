@@ -1,10 +1,16 @@
 package ru.hogwarts.school.service;
 
-import ru.hogwarts.school.entities.Student;
+import ru.hogwarts.school.dto.StudentDto;
+import ru.hogwarts.school.dto.StudentDtoIn;
+
+import java.util.List;
+
 public interface StudentService {
 
-    Student addStudent (Student student);
-    Student findStudent(long id);
-    Student editStudent(long id, Student student);
-    void deleteStudent(long id);
+    StudentDto addStudent (StudentDtoIn studentDtoIn);
+    StudentDto findStudent(long id);
+    StudentDto editStudent(long id, StudentDtoIn studentDtoIn);
+    StudentDto deleteStudent(long id);
+
+    List<StudentDto> findAll(Integer age);
 }
