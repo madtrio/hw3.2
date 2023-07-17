@@ -1,10 +1,13 @@
 package ru.hogwarts.school.entities;
 
+import javax.persistence.*;
 import java.util.Objects;
-
+@Entity
+@Table(name = "faculties")
 public class Faculty {
 
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
         private long id;
         private String name;
         private String color;

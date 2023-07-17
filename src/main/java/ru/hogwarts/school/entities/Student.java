@@ -1,8 +1,13 @@
 package ru.hogwarts.school.entities;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "students")
 public class Student {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private long id;
     private String name;
@@ -11,7 +16,7 @@ public class Student {
     public Student() {
     }
 
-    public Student (long id, String name, int age) {
+    public Student(long id, String name, int age) {
         this.id = id;
         this.name = name;
         this.age = age;
