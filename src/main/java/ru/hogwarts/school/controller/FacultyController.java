@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.hogwarts.school.dto.FacultyDto;
 import ru.hogwarts.school.dto.FacultyDtoIn;
+import ru.hogwarts.school.dto.StudentDto;
 import ru.hogwarts.school.entities.Faculty;
 import ru.hogwarts.school.service.FacultyService;
 
@@ -52,6 +53,13 @@ public class FacultyController {
         return facultyService.findAll(color);
     }
 
-
+    @GetMapping("/filterFacult")
+    public List<FacultyDto> findByColorOrName(@RequestParam String colorOrName) {
+        return facultyService.findByColorOrName(colorOrName);
+    }
+    @GetMapping("/{id}/students")
+    public List<StudentDto> findStudents(@PathVariable("id") long id) {
+        return facultyService.findStudents(id);
+    }
 
 }

@@ -1,5 +1,6 @@
 package ru.hogwarts.school.service;
 
+import ru.hogwarts.school.dto.FacultyDto;
 import ru.hogwarts.school.dto.StudentDto;
 import ru.hogwarts.school.dto.StudentDtoIn;
 
@@ -13,4 +14,8 @@ public interface StudentService {
     StudentDto deleteStudent(long id);
 
     List<StudentDto> findAll(Integer age);
+
+    List<StudentDto> findByAgeBetween(int ageFrom, int ageTo);
+
+    FacultyDto findFaculty(long id);
 }

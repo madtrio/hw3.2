@@ -1,6 +1,7 @@
 package ru.hogwarts.school.controller;
 
 
+import ru.hogwarts.school.dto.FacultyDto;
 import ru.hogwarts.school.dto.StudentDto;
 import ru.hogwarts.school.dto.StudentDtoIn;
 import ru.hogwarts.school.service.StudentService;
@@ -49,4 +50,13 @@ public class StudentController {
         return studentService.findAll(age);
     }
 
+    @GetMapping("/filterAge")
+    public List<StudentDto> findByAgeBetween(@RequestParam int ageFrom, @RequestParam int ageTo) {
+        return studentService.findByAgeBetween(ageFrom,ageFrom);
+    }
+
+    @GetMapping("/{id}/faculty")
+    public FacultyDto findFaculty (@PathVariable("id") long id) {
+        return studentService.findFaculty(id);
+    }
 }

@@ -5,6 +5,18 @@ public class StudentDto {
     private long id;
     private String name;
     private int age;
+    private FacultyDto faculty;
+
+    public StudentDto(long id, String name, int age, FacultyDto faculty) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.faculty = faculty;
+    }
+
+    public StudentDto() {
+
+    }
 
     public long getId() {
         return id;
@@ -28,5 +40,14 @@ public class StudentDto {
 
     public void setAge(int age) {
         this.age = age;
-    }}
+    }
+
+    public FacultyDto getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(FacultyDto faculty) {
+        this.faculty = faculty;
+    }
+}
 
