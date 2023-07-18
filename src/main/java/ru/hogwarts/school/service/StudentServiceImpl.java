@@ -9,18 +9,25 @@ import ru.hogwarts.school.dto.FacultyDto;
 import ru.hogwarts.school.dto.StudentDtoIn;
 import ru.hogwarts.school.dto.StudentDto;
 import ru.hogwarts.school.entities.Student;
+import ru.hogwarts.school.exception.FacultyNotFoundException;
 import ru.hogwarts.school.exception.StudentNotFoundException;
+import ru.hogwarts.school.mapper.FacultyMapper;
 import ru.hogwarts.school.mapper.StudentMapper;
+import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
 @Service
 public  class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
+    private final FacultyRepository facultyRepository;
     private final StudentMapper studentMapper;
+    private final FacultyMapper facultyMapper;
 
-    public StudentServiceImpl(StudentRepository studentRepository, StudentMapper studentMapper) {
+    public StudentServiceImpl(StudentRepository studentRepository, FacultyRepository facultyRepository, StudentMapper studentMapper, FacultyMapper facultyMapper) {
         this.studentRepository = studentRepository;
+        this.facultyRepository = facultyRepository;
         this.studentMapper = studentMapper;
+        this.facultyMapper = facultyMapper;
     }
     public StudentDto addStudent(StudentDtoIn studentDtoIn) {
         return studentMapper.toDto(studentRepository.save(studentMapper.toEntity(studentDtoIn)));
@@ -38,6 +45,7 @@ public  class StudentServiceImpl implements StudentService {
                 .map(oldStudent -> {
                     oldStudent.setAge(studentDtoIn.getAge());
                     oldStudent.setName(studentDtoIn.getName());
+                    Optional.ofNullable(studentDtoIn.getFacultyId()).ifPresent(facultyId -> oldStudent.setFaculty(facultyRepository.findById(facultyId).orElseThrow(()-> new FacultyNotFoundException(facultyId))));
                     return studentMapper.toDto(studentRepository.save(oldStudent));
                 })
                 .orElseThrow(() -> new StudentNotFoundException(id));
@@ -61,6 +69,14 @@ public  class StudentServiceImpl implements StudentService {
                 .orElseGet(studentRepository::findAll).stream()
                 .map(studentMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    public List<StudentDto> findByAgeBetween(int ageFrom, int ageTo) {
+        return studentRepository.findByAgeBetween(ageFrom,ageTo).stream().map(studentMapper::toDto).collect(Collectors.toList());
+    }
+
+    public FacultyDto findFaculty(long id) {
+        return studentRepository.findById(id).map(Student::getFaculty).map(facultyMapper::toDto).orElseThrow(() -> new StudentNotFoundException(id));
     }
 
 }

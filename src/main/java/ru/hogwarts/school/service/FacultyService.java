@@ -2,6 +2,7 @@ package ru.hogwarts.school.service;
 
 import ru.hogwarts.school.dto.FacultyDto;
 import ru.hogwarts.school.dto.FacultyDtoIn;
+import ru.hogwarts.school.dto.StudentDto;
 import ru.hogwarts.school.entities.Faculty;
 
 import java.util.List;
@@ -15,4 +16,8 @@ public interface FacultyService {
 
 
     List<FacultyDto> findAll(String color);
+
+    List<FacultyDto> findByColorOrName(String colorOrName);
+
+    List<StudentDto> findStudents(long id);
 }
