@@ -1,5 +1,6 @@
 package ru.hogwarts.school.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.dto.FacultyDto;
 import ru.hogwarts.school.dto.StudentDto;
 import ru.hogwarts.school.dto.StudentDtoIn;
@@ -18,4 +19,6 @@ public interface StudentService {
     List<StudentDto> findByAgeBetween(int ageFrom, int ageTo);
 
     FacultyDto findFaculty(long id);
+
+    StudentDto uploadAvatar(long id, MultipartFile multipartFile);
 }
