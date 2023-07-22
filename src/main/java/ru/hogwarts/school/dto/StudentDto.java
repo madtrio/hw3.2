@@ -6,12 +6,14 @@ public class StudentDto {
     private String name;
     private int age;
     private FacultyDto faculty;
+    private String avatarUrl;
 
-    public StudentDto(long id, String name, int age, FacultyDto faculty) {
+    public StudentDto(long id, String name, int age, FacultyDto faculty, String avatarUrl) {
         this.id = id;
         this.name = name;
         this.age = age;
         this.faculty = faculty;
+        this.avatarUrl = avatarUrl;
     }
 
     public StudentDto() {
@@ -48,6 +50,14 @@ public class StudentDto {
 
     public void setFaculty(FacultyDto faculty) {
         this.faculty = faculty;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }
 

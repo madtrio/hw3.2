@@ -1,19 +1,14 @@
 package ru.hogwarts.school.controller;
 
 
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.dto.FacultyDto;
 import ru.hogwarts.school.dto.StudentDto;
 import ru.hogwarts.school.dto.StudentDtoIn;
 import ru.hogwarts.school.service.StudentService;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 @RestController
@@ -52,11 +47,16 @@ public class StudentController {
 
     @GetMapping("/filterAge")
     public List<StudentDto> findByAgeBetween(@RequestParam int ageFrom, @RequestParam int ageTo) {
-        return studentService.findByAgeBetween(ageFrom,ageFrom);
+        return studentService.findByAgeBetween(ageFrom, ageFrom);
     }
 
     @GetMapping("/{id}/faculty")
-    public FacultyDto findFaculty (@PathVariable("id") long id) {
+    public FacultyDto findFaculty(@PathVariable("id") long id) {
         return studentService.findFaculty(id);
+    }
+
+    @PatchMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public StudentDto uploadAvatar(@PathVariable long id, @RequestPart("avatar") MultipartFile multipartFile) {
+        return studentService.uploadAvatar(id, multipartFile);
     }
 }
