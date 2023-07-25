@@ -26,26 +26,33 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import ru.hogwarts.school.dto.FacultyDto;
 import ru.hogwarts.school.dto.FacultyDtoIn;
+import ru.hogwarts.school.dto.FacultyDtoOut;
 import ru.hogwarts.school.entities.Faculty;
 import ru.hogwarts.school.mapper.FacultyMapper;
 import ru.hogwarts.school.mapper.StudentMapper;
 import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
+import ru.hogwarts.school.service.FacultyService;
 
 @WebMvcTest(controllers = FacultyController.class)
 public class FacultyControllerTest {
+
     @Autowired
     private MockMvc mockMvc;
+
     @MockBean
     private FacultyRepository facultyRepository;
+
     @MockBean
     private StudentRepository studentRepository;
+
     @SpyBean
     private FacultyService facultyService;
+
     @SpyBean
     private FacultyMapper facultyMapper;
+
     @SpyBean
     private StudentMapper studentMapper;
 
@@ -55,66 +62,69 @@ public class FacultyControllerTest {
     private final Faker faker = new Faker();
 
     @Test
-    public void addTest() throws Exception {
-        FacultyDtoIn facultyDtoIn = generate();
+    public void createTest() throws Exception {
+        FacultyDtoIn facultyDtoIn = generateDto();
         Faculty faculty = new Faculty();
         faculty.setId(1L);
         faculty.setName(facultyDtoIn.getName());
         faculty.setColor(facultyDtoIn.getColor());
-        when (facultyRepository.save(any())).thenReturn(faculty);
+        when(facultyRepository.save(any())).thenReturn(faculty);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/faculty")
-                        .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(facultyDtoIn))
-        ).andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(result -> {
-                FacultyDto facultyDto = objectMapper.readValue(
-                        result.getResponse().getContentAsString(),
-                        FacultyDto.class
-                );
-                assertThat(facultyDto).isNotNull();
-                assertThat(facultyDto.getId()).isEqualTo(1L);
-                assertThat(facultyDto.getColor()).isEqualTo(facultyDtoIn.getColor());
-                assertThat(facultyDto.getName()).isEqualTo(facultyDtoIn.getName());
-            });
-        verify(facultyRepository.save(any()), new Times (1));
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/faculties")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(facultyDtoIn))
+                )
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(result -> {
+                    FacultyDtoOut facultyDtoOut = objectMapper.readValue(
+                            result.getResponse().getContentAsString(),
+                            FacultyDtoOut.class
+                    );
+                    assertThat(facultyDtoOut).isNotNull();
+                    assertThat(facultyDtoOut.getId()).isEqualTo(1L);
+                    assertThat(facultyDtoOut.getColor()).isEqualTo(facultyDtoIn.getColor());
+                    assertThat(facultyDtoOut.getName()).isEqualTo(facultyDtoIn.getName());
+                });
+        verify(facultyRepository, new Times(1)).save(any());
     }
 
     @Test
-    public void editTest() throws Exception {
-        FacultyDtoIn facultyDtoIn = generate();
-        Faculty oldFaculty = new Faculty();
-        oldFaculty.setId(1L);
-        oldFaculty.setName(faker.harryPotter().house());
-        oldFaculty.setColor(faker.color().name());
-        when (facultyRepository.findById(eq(1L))).thenReturn(Optional.of(oldFaculty));
+    public void updateTest() throws Exception {
+        FacultyDtoIn facultyDtoIn = generateDto();
+
+        Faculty oldFaculty = generate(1);
+
+        when(facultyRepository.findById(eq(1L))).thenReturn(Optional.of(oldFaculty));
 
         oldFaculty.setColor(facultyDtoIn.getColor());
-
         oldFaculty.setName(facultyDtoIn.getName());
-        when (facultyRepository.save(any())).thenReturn(oldFaculty);
+        when(facultyRepository.save(any())).thenReturn(oldFaculty);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/faculty/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(facultyDtoIn))
+        mockMvc.perform(
+                        MockMvcRequestBuilders.put("/faculties/1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(facultyDtoIn))
                 ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(result -> {
-                    FacultyDto facultyDto = objectMapper.readValue(
+                    FacultyDtoOut facultyDtoOut = objectMapper.readValue(
                             result.getResponse().getContentAsString(),
-                            FacultyDto.class
+                            FacultyDtoOut.class
                     );
-                    assertThat(facultyDto).isNotNull();
-                    assertThat(facultyDto.getId()).isEqualTo(1L);
-                    assertThat(facultyDto.getColor()).isEqualTo(facultyDtoIn.getColor());
-                    assertThat(facultyDto.getName()).isEqualTo(facultyDtoIn.getName());
+                    assertThat(facultyDtoOut).isNotNull();
+                    assertThat(facultyDtoOut.getId()).isEqualTo(1L);
+                    assertThat(facultyDtoOut.getColor()).isEqualTo(facultyDtoIn.getColor());
+                    assertThat(facultyDtoOut.getName()).isEqualTo(facultyDtoIn.getName());
                 });
-        verify(facultyRepository.save(any()), new Times (1)).wait(any());
+        verify(facultyRepository, Mockito.times(1)).save(any());
         Mockito.reset(facultyRepository);
+
+        // not found checking
 
         when(facultyRepository.findById(eq(2L))).thenReturn(Optional.empty());
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.put("/faculty/2")
+                        MockMvcRequestBuilders.put("/faculties/2")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(facultyDtoIn))
                 ).andExpect(MockMvcResultMatchers.status().isNotFound())
@@ -126,32 +136,32 @@ public class FacultyControllerTest {
         verify(facultyRepository, never()).save(any());
     }
 
-
     @Test
-    public void findTest() throws Exception {
+    public void getTest() throws Exception {
         Faculty faculty = generate(1);
 
         when(facultyRepository.findById(eq(1L))).thenReturn(Optional.of(faculty));
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/faculty/1")
+                        MockMvcRequestBuilders.get("/faculties/1")
                 ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(result -> {
-                    FacultyDto facultyDto = objectMapper.readValue(
+                    FacultyDtoOut facultyDtoOut = objectMapper.readValue(
                             result.getResponse().getContentAsString(),
-                            FacultyDto.class
+                            FacultyDtoOut.class
                     );
-                    assertThat(facultyDto).isNotNull();
-                    assertThat(facultyDto.getId()).isEqualTo(1L);
-                    assertThat(facultyDto.getColor()).isEqualTo(faculty.getColor());
-                    assertThat(facultyDto.getName()).isEqualTo(faculty.getName());
+                    assertThat(facultyDtoOut).isNotNull();
+                    assertThat(facultyDtoOut.getId()).isEqualTo(1L);
+                    assertThat(facultyDtoOut.getColor()).isEqualTo(faculty.getColor());
+                    assertThat(facultyDtoOut.getName()).isEqualTo(faculty.getName());
                 });
 
+        // not found checking
 
         when(facultyRepository.findById(eq(2L))).thenReturn(Optional.empty());
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/faculty/2")
+                        MockMvcRequestBuilders.get("/faculties/2")
                 ).andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(result -> {
                     String responseString = result.getResponse().getContentAsString();
@@ -167,17 +177,17 @@ public class FacultyControllerTest {
         when(facultyRepository.findById(eq(1L))).thenReturn(Optional.of(faculty));
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.delete("/faculty/1")
+                        MockMvcRequestBuilders.delete("/faculties/1")
                 ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(result -> {
-                    FacultyDto facultyDto = objectMapper.readValue(
+                    FacultyDtoOut facultyDtoOut = objectMapper.readValue(
                             result.getResponse().getContentAsString(),
-                            FacultyDto.class
+                            FacultyDtoOut.class
                     );
-                    assertThat(facultyDto).isNotNull();
-                    assertThat(facultyDto.getId()).isEqualTo(1L);
-                    assertThat(facultyDto.getColor()).isEqualTo(faculty.getColor());
-                    assertThat(facultyDto.getName()).isEqualTo(faculty.getName());
+                    assertThat(facultyDtoOut).isNotNull();
+                    assertThat(facultyDtoOut.getId()).isEqualTo(1L);
+                    assertThat(facultyDtoOut.getColor()).isEqualTo(faculty.getColor());
+                    assertThat(facultyDtoOut.getName()).isEqualTo(faculty.getName());
                 });
         verify(facultyRepository, times(1)).delete(any());
         Mockito.reset(facultyRepository);
@@ -187,7 +197,7 @@ public class FacultyControllerTest {
         when(facultyRepository.findById(eq(2L))).thenReturn(Optional.empty());
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.delete("/faculty/2")
+                        MockMvcRequestBuilders.delete("/faculties/2")
                 ).andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(result -> {
                     String responseString = result.getResponse().getContentAsString();
@@ -203,32 +213,32 @@ public class FacultyControllerTest {
                 .map(this::generate)
                 .limit(20)
                 .toList();
-        List<FacultyDto> expectedResult = faculties.stream()
+        List<FacultyDtoOut> expectedResult = faculties.stream()
                 .map(facultyMapper::toDto)
                 .toList();
 
         when(facultyRepository.findAll()).thenReturn(faculties);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/faculty")
+                        MockMvcRequestBuilders.get("/faculties")
                 ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(result -> {
-                    List<FacultyDto> facultyDtos = objectMapper.readValue(
+                    List<FacultyDtoOut> facultyDtoOuts = objectMapper.readValue(
                             result.getResponse().getContentAsString(),
                             new TypeReference<>() {
                             }
                     );
-                    assertThat(facultyDtos)
+                    assertThat(facultyDtoOuts)
                             .isNotNull()
                             .isNotEmpty();
                     Stream.iterate(0, index -> index + 1)
-                            .limit(facultyDtos.size())
+                            .limit(facultyDtoOuts.size())
                             .forEach(index -> {
-                                FacultyDto facultyDto = facultyDtos.get(index);
-                                FacultyDto expected = expectedResult.get(index);
-                                assertThat(facultyDto.getId()).isEqualTo(expected.getId());
-                                assertThat(facultyDto.getColor()).isEqualTo(expected.getColor());
-                                assertThat(facultyDto.getName()).isEqualTo(expected.getName());
+                                FacultyDtoOut facultyDtoOut = facultyDtoOuts.get(index);
+                                FacultyDtoOut expected = expectedResult.get(index);
+                                assertThat(facultyDtoOut.getId()).isEqualTo(expected.getId());
+                                assertThat(facultyDtoOut.getColor()).isEqualTo(expected.getColor());
+                                assertThat(facultyDtoOut.getName()).isEqualTo(expected.getName());
                             });
                 });
 
@@ -236,43 +246,42 @@ public class FacultyControllerTest {
         faculties = faculties.stream()
                 .filter(faculty -> faculty.getColor().equals(color))
                 .collect(Collectors.toList());
-        List<FacultyDto> expectedResult2 = faculties.stream()
+        List<FacultyDtoOut> expectedResult2 = faculties.stream()
                 .filter(faculty -> faculty.getColor().equals(color))
                 .map(facultyMapper::toDto)
                 .toList();
         when(facultyRepository.findAllByColor(eq(color))).thenReturn(faculties);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/faculty?color={color}", color)
+                        MockMvcRequestBuilders.get("/faculties?color={color}", color)
                 ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(result -> {
-                    List<FacultyDto> facultyDtos = objectMapper.readValue(
+                    List<FacultyDtoOut> facultyDtoOuts = objectMapper.readValue(
                             result.getResponse().getContentAsString(),
                             new TypeReference<>() {
                             }
                     );
-                    assertThat(facultyDtos)
+                    assertThat(facultyDtoOuts)
                             .isNotNull()
                             .isNotEmpty();
                     Stream.iterate(0, index -> index + 1)
-                            .limit(facultyDtos.size())
+                            .limit(facultyDtoOuts.size())
                             .forEach(index -> {
-                                FacultyDto facultyDto = facultyDtos.get(index);
-                                FacultyDto expected = expectedResult2.get(index);
-                                assertThat(facultyDto.getId()).isEqualTo(expected.getId());
-                                assertThat(facultyDto.getColor()).isEqualTo(expected.getColor());
-                                assertThat(facultyDto.getName()).isEqualTo(expected.getName());
+                                FacultyDtoOut facultyDtoOut = facultyDtoOuts.get(index);
+                                FacultyDtoOut expected = expectedResult2.get(index);
+                                assertThat(facultyDtoOut.getId()).isEqualTo(expected.getId());
+                                assertThat(facultyDtoOut.getColor()).isEqualTo(expected.getColor());
+                                assertThat(facultyDtoOut.getName()).isEqualTo(expected.getName());
                             });
                 });
     }
 
-    private FacultyDtoIn generate() {
+    private FacultyDtoIn generateDto() {
         FacultyDtoIn facultyDtoIn = new FacultyDtoIn();
         facultyDtoIn.setName(faker.harryPotter().house());
         facultyDtoIn.setColor(faker.color().name());
         return facultyDtoIn;
     }
-
 
     private Faculty generate(long id) {
         Faculty faculty = new Faculty();

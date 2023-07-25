@@ -15,7 +15,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import ru.hogwarts.school.dto.StudentDtoIn;
-import ru.hogwarts.school.dto.StudentDto;
+import ru.hogwarts.school.dto.StudentDtoOut;
 import ru.hogwarts.school.repository.StudentRepository;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -38,47 +38,47 @@ public class StudentControllerTest {
     }
 
     @Test
-    public StudentDto addStudent() {
+    public StudentDtoOut createStudent() {
         StudentDtoIn studentDtoIn = generate();
 
-        ResponseEntity<StudentDto> responseEntity = testRestTemplate.postForEntity(
+        ResponseEntity<StudentDtoOut> responseEntity = testRestTemplate.postForEntity(
                 "http://localhost:" + port + "/students",
                 studentDtoIn,
-                StudentDto.class
+                StudentDtoOut.class
         );
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        StudentDto studentDto = responseEntity.getBody();
+        StudentDtoOut studentDtoOut = responseEntity.getBody();
 
-        assertThat(studentDto).isNotNull();
-        assertThat(studentDto.getId()).isNotEqualTo(0L);
-        assertThat(studentDto.getAge()).isEqualTo(studentDtoIn.getAge());
-        assertThat(studentDto.getName()).isEqualTo(studentDtoIn.getName());
+        assertThat(studentDtoOut).isNotNull();
+        assertThat(studentDtoOut.getId()).isNotEqualTo(0L);
+        assertThat(studentDtoOut.getAge()).isEqualTo(studentDtoIn.getAge());
+        assertThat(studentDtoOut.getName()).isEqualTo(studentDtoIn.getName());
 
-        return studentDto;
+        return studentDtoOut;
     }
 
     @Test
-    public void editStudent() {
-        StudentDto created = addStudent();
+    public void updateStudent() {
+        StudentDtoOut created = createStudent();
         StudentDtoIn studentDtoIn = new StudentDtoIn();
         studentDtoIn.setName(faker.name().fullName());
         studentDtoIn.setAge(created.getAge());
 
-        ResponseEntity<StudentDto> responseEntity = testRestTemplate.exchange(
+        ResponseEntity<StudentDtoOut> responseEntity = testRestTemplate.exchange(
                 "http://localhost:" + port + "/students/" + created.getId(),
                 HttpMethod.PUT,
                 new HttpEntity<>(studentDtoIn),
-                StudentDto.class
+                StudentDtoOut.class
         );
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        StudentDto studentDto = responseEntity.getBody();
+        StudentDtoOut studentDtoOut = responseEntity.getBody();
 
-        assertThat(studentDto).isNotNull();
-        assertThat(studentDto.getId()).isEqualTo(created.getId());
-        assertThat(studentDto.getAge()).isEqualTo(studentDtoIn.getAge());
-        assertThat(studentDto.getName()).isEqualTo(studentDtoIn.getName());
+        assertThat(studentDtoOut).isNotNull();
+        assertThat(studentDtoOut.getId()).isEqualTo(created.getId());
+        assertThat(studentDtoOut.getAge()).isEqualTo(studentDtoIn.getAge());
+        assertThat(studentDtoOut.getName()).isEqualTo(studentDtoIn.getName());
 
         // checking not found
         long incorrectId = created.getId() + 1;
