@@ -33,9 +33,6 @@ import ru.hogwarts.school.mapper.FacultyMapper;
 import ru.hogwarts.school.mapper.StudentMapper;
 import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
-import ru.hogwarts.school.service.FacultyService;
-
-import static org.mockito.Mockito.when;
 
 @WebMvcTest(controllers = FacultyController.class)
 public class FacultyControllerTest {

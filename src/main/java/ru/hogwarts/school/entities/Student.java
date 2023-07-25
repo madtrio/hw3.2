@@ -1,26 +1,32 @@
 package ru.hogwarts.school.entities;
 
-import javax.persistence.*;
-import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "students")
 public class Student {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    private long id;
+    private Long id;
     private String name;
     private int age;
+
     @ManyToOne
-    @JoinColumn (name = "faculty_id")
+    @JoinColumn(name = "faculty_id")
     private Faculty faculty;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -48,25 +54,4 @@ public class Student {
         this.faculty = faculty;
     }
 
-    @Override
-    public String toString() {
-        return "Students{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", age=" + age +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Student students = (Student) o;
-        return id == students.id && age == students.age && Objects.equals(name, students.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, age);
-    }
 }

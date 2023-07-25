@@ -2,18 +2,18 @@ package ru.hogwarts.school.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.hogwarts.school.dto.FacultyDtoIn;
-import ru.hogwarts.school.dto.FacultyDto;
+import ru.hogwarts.school.dto.FacultyDtoOut;
 import ru.hogwarts.school.entities.Faculty;
 
 @Component
 public class FacultyMapper {
 
-    public FacultyDto toDto(Faculty faculty) {
-        FacultyDto facultyDto = new FacultyDto();
-        facultyDto.setId(faculty.getId());
-        facultyDto.setName(faculty.getName());
-        facultyDto.setColor(faculty.getColor());
-        return facultyDto;
+    public FacultyDtoOut toDto(Faculty faculty) {
+        FacultyDtoOut facultyDtoOut = new FacultyDtoOut();
+        facultyDtoOut.setId(faculty.getId());
+        facultyDtoOut.setName(faculty.getName());
+        facultyDtoOut.setColor(faculty.getColor());
+        return facultyDtoOut;
     }
 
     public Faculty toEntity(FacultyDtoIn facultyDtoIn) {
