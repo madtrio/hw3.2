@@ -12,7 +12,7 @@ public class AvatarMapper {
         avatarDto.setId(avatarDto.getId());
         avatarDto.setFileSize(avatar.getFileSize());
         avatarDto.setMediaType(avatar.getMediaType());
-        avatarDto.setAvatarUrl("");
+        avatarDto.setAvatarUrl("http://localhost:8080/avatars/"+ avatar.getId() + "from-db");
         return avatarDto;
     }
 }
