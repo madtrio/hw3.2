@@ -1,19 +1,18 @@
 package ru.hogwarts.school.dto;
 
-import ru.hogwarts.school.entities.Faculty;
+public class FacultyDtoOut {
 
-public class FacultyDto extends Faculty {
     private long id;
     private String name;
     private String color;
 
-    public FacultyDto(long id, String name, String color) {
+    public FacultyDtoOut(long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;
     }
 
-    public FacultyDto() {
+    public FacultyDtoOut() {
     }
 
     public long getId() {
@@ -39,4 +38,5 @@ public class FacultyDto extends Faculty {
     public void setColor(String color) {
         this.color = color;
     }
+
 }

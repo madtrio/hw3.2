@@ -1,6 +1,7 @@
 package ru.hogwarts.school.dto;
 
 public class FacultyDtoIn {
+
     private String name;
     private String color;
 
@@ -27,4 +28,5 @@ public class FacultyDtoIn {
     public void setColor(String color) {
         this.color = color;
     }
+
 }

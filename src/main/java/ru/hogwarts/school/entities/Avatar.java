@@ -1,18 +1,29 @@
 package ru.hogwarts.school.entities;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Avatar {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String filePath;
     private long fileSize;
     private String mediaType;
+
+    @Lob
     private byte[] data;
+
     @OneToOne
-    @JoinColumn (name = "student_id")
+    @JoinColumn(name = "student_id")
     private Student student;
 
     public Long getId() {
@@ -62,4 +73,5 @@ public class Avatar {
     public void setStudent(Student student) {
         this.student = student;
     }
+
 }

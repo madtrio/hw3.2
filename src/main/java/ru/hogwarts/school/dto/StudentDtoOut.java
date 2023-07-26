@@ -1,24 +1,12 @@
 package ru.hogwarts.school.dto;
 
-public class StudentDto {
+public class StudentDtoOut {
 
     private long id;
     private String name;
     private int age;
-    private FacultyDto faculty;
+    private FacultyDtoOut faculty;
     private String avatarUrl;
-
-    public StudentDto(long id, String name, int age, FacultyDto faculty, String avatarUrl) {
-        this.id = id;
-        this.name = name;
-        this.age = age;
-        this.faculty = faculty;
-        this.avatarUrl = avatarUrl;
-    }
-
-    public StudentDto() {
-
-    }
 
     public long getId() {
         return id;
@@ -44,11 +32,11 @@ public class StudentDto {
         this.age = age;
     }
 
-    public FacultyDto getFaculty() {
+    public FacultyDtoOut getFaculty() {
         return faculty;
     }
 
-    public void setFaculty(FacultyDto faculty) {
+    public void setFaculty(FacultyDtoOut faculty) {
         this.faculty = faculty;
     }
 
@@ -59,5 +47,5 @@ public class StudentDto {
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
-}
 
+}
