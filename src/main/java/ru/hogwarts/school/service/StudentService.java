@@ -3,6 +3,8 @@ package ru.hogwarts.school.service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +28,7 @@ public class StudentService {
     private final StudentMapper studentMapper;
     private final FacultyMapper facultyMapper;
     private final AvatarService avatarService;
+    private Student studentDtoOut;
 
     public StudentService(StudentRepository studentRepository,
                           FacultyRepository facultyRepository,
@@ -106,4 +109,17 @@ public class StudentService {
         return studentDtoOut;
     }
 
+    public int getCountOfStudents() {
+        return studentRepository.getCountOfStudents();
+    }
+
+    public double getAverageAge() {
+        return studentRepository.getAverageAge();
+    }
+
+    public List<StudentDtoOut> getLastStudents(int count) {
+        return studentRepository.getLastStudents(Pageable.ofSize(count)).stream()
+                .map((StudentDtoOut student) -> studentMapper.toDto(studentDtoOut))
+                .collect(Collectors.toList());
+    }
 }

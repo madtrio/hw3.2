@@ -1,5 +1,7 @@
 package ru.hogwarts.school.entities;
 
+import ru.hogwarts.school.dto.AvatarDto;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,6 +23,7 @@ public class Student {
     @ManyToOne
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
+    private Avatar avatar;
 
     public Long getId() {
         return id;
@@ -54,4 +57,7 @@ public class Student {
         this.faculty = faculty;
     }
 
+    public Avatar getAvatar() {
+                return avatar;
+    }
 }
