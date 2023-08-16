@@ -108,7 +108,7 @@ public class FacultyService {
                 .max(Comparator.comparing(name -> name.length()))
                 .get();
     }
-    public Integer sum () {
+    public Integer summ () {
         long start = System.currentTimeMillis();
         int res = Stream.iterate(1, a -> a +1)
                 .limit(1_000_000)

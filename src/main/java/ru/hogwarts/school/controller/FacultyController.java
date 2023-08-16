@@ -67,8 +67,8 @@ public class FacultyController {
         return facultyService.getLongestName();
     }
     @GetMapping ("/sum")
-    public Integer sum () {
-        return facultyService.sum();
+    public Integer summ () {
+        return facultyService.summ();
     }
     @GetMapping ("/sum-impr")
     public Integer sumImpr () {
