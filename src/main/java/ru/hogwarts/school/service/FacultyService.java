@@ -1,8 +1,12 @@
 package ru.hogwarts.school.service;
 
+import java.sql.SQLOutput;
+import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,5 +102,31 @@ public class FacultyService {
                 .map(studentMapper::toDto)
                 .collect(Collectors.toList());
     }
-
+    public String getLongestName() {
+        return facultyRepository.findAll().stream()
+                .map(faculty -> faculty.getName())
+                .max(Comparator.comparing(name -> name.length()))
+                .get();
+    }
+    public Integer sum () {
+        long start = System.currentTimeMillis();
+        int res = Stream.iterate(1, a -> a +1)
+                .limit(1_000_000)
+                .reduce(0, (a, b) -> a + b );
+        long fin = System.currentTimeMillis();
+        long dif = fin  - start;
+        System.out.println("simple: " + dif);
+        return res;
+    }
+    public Integer sumImpr () {
+        long start = System.currentTimeMillis();
+        int res = Stream.iterate(1, a -> a +1)
+                .parallel()
+                .limit(1_000_000)
+                .reduce(0, (a, b) -> a + b );
+        long fin = System.currentTimeMillis();
+        long dif = fin  - start;
+        System.out.println("impr-simple: " + dif);
+        return res;
+    }
 }

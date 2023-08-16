@@ -1,6 +1,7 @@
 package ru.hogwarts.school.controller;
 
 import java.util.List;
+
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,18 +71,27 @@ public class StudentController {
         return studentService.uploadAvatar(id, multipartFile);
     }
 
-    @GetMapping ("/count")
-    public int getCountOfStudents ( ) {
+    @GetMapping("/count")
+    public int getCountOfStudents() {
         return studentService.getCountOfStudents();
     }
 
-    @GetMapping ("/averageAge")
-    public double getAverageAge ( ) {
+    @GetMapping("/averageAge")
+    public double getAverageAge() {
         return studentService.getAverageAge();
     }
+
     @GetMapping("/")
-    public List<StudentDtoOut> getLastStudents (@RequestParam(value = "count", defaultValue = "5", required = false) int count) {
+    public List<StudentDtoOut> getLastStudents(@RequestParam(value = "count", defaultValue = "5", required = false) int count) {
         return studentService.getLastStudents(Math.abs(count));
     }
 
+    @GetMapping("/names-start-with-a")
+    public List<String> getNamesStartWithA() {
+        return studentService.getNamesStartWithA();
+    }
+    @GetMapping("/avg-age")
+    public double getAvgAge() {
+        return studentService.getAvgAge();
+    }
 }
